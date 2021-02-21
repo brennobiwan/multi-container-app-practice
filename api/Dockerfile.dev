@@ -2,7 +2,7 @@
 FROM node:alpine
 
 # create a working dir
-WORKDIR "/api"
+WORKDIR "/app"
 
 # copy the list of dependencies
 COPY ./package.json ./
@@ -14,4 +14,4 @@ RUN npm install
 COPY ./ ./
 
 # set the start up command
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]
