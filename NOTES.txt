@@ -1,0 +1,42 @@
+- The upstream directive on the reverse proxy must indicate the port number on which the webserver is listening for connections.
+# nginx/default.conf:
+    upstream client { server client:3001; }
+    server { listen 80; }
+# client/nginx/default.conf:
+    server { listen 3001; }
+
+
+
+- On a production deployment, the apps know how to reach out to the external services (RDS & ElastiCache) because of the environment variables configured on the Elastic Beanstalk instance - database endpoints, ports, etc.
+
+
+
+- The reverse proxy does the routing, so it needs the "upstream" directive along with the "location { proxy_pass <upstream> }" configuration; the webserver, on the other hand, delivers the content; so it needs the "location <path> { root /usr/share/nginx/html ... }" configuration.
+# webserver (./client/nginx/default.conf)
+server {
+    listen 3001;    
+    location / {
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+        try_files $uri $uri/ /index.html;
+    }
+}
+
+# reverse proxy (./nginx/default.conf)
+upstream api {
+    server api:5000;
+}
+upstream client {
+    server client:3001;
+}
+server {
+    listen 80;
+    location / {
+        proxy_pass http://client;
+    }
+    location /api {
+        rewrite /api/(.*) /$1 break;
+        proxy_pass http://api;
+    }
+}
+
