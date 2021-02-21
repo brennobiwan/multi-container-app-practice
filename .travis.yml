@@ -1,0 +1,15 @@
+# stating that Travis CI needs root permissions
+sudo: required
+
+# telling Travis CI that Docker is needed
+services:
+    - docker
+
+# preparing the test environment (building the testing image)
+before_install:
+    - docker build -t brennobiwan/multi-container-test -f ./client/Dockerfile.dev ./client
+
+# running the test scripts
+scripts: 
+    - docker run -e CI=true -t brennobiwan/multi-container-test npm run test -- --coverage
+
