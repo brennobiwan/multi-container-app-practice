@@ -1,0 +1,14 @@
+build steps (development):
+
+    #1 build the Docker dev images for all services (Dockerfile.dev)
+    #2 build the "docker-compose.yml" file
+    #3 build the ".travis.yml" file
+
+
+
+build steps (production):
+
+    #1 build the Docker production images for all services (Dockerfile)
+    #2 push the production images to Docker Hub
+    #3 build the deployment ".travis.yml" file
+    #4 build the "Dockerrun.aws.json" file
